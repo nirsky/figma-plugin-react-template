@@ -1,0 +1,7 @@
+{
+  "name": "Guru Toolbar",
+  "id": "739463386931007173",
+  "api": "1.0.0",
+  "main": "dist/code.js",
+  "ui": "dist/ui.html"
+}
