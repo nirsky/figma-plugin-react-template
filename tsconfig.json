@@ -6,6 +6,8 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "experimentalDecorators": true,
-    "removeComments": true
+    "removeComments": true,
+    "noImplicitAny": false,
+    "moduleResolution": "node"
   }
 }

@@ -15,7 +15,10 @@
         "curly": false,
         "member-access": [true, "no-public"],
         "semicolon": false,
-        "no-trailing-whitespace": false
+        "no-trailing-whitespace": false,
+        "no-console": false,
+        "jsx-wrap-multiline": false,
+        "jsx-no-lambda": false
     },
     "rulesDirectory": []
 }

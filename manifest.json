@@ -1,6 +1,6 @@
 {
-  "name": "Guru Toolbar",
-  "id": "739463386931007173",
+  "name": "Figma Plugin Template",
+  "id": "00000000",
   "api": "1.0.0",
   "main": "dist/code.js",
   "ui": "dist/ui.html"
