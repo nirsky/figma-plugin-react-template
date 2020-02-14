@@ -1,5 +1,5 @@
-// Figma Plugin API version 1, update 10
 // https://www.figma.com/plugin-docs/api/typings/
+// Figma Plugin API version 1, update 13
 
 declare global {
 // Global variable with Figma's plugin API.
@@ -86,25 +86,25 @@ interface ClientStorageAPI {
 }
 
 interface NotificationOptions {
-  timeout?: number,
+  timeout?: number
 }
 
 interface NotificationHandler {
-  cancel: () => void,
+  cancel: () => void
 }
 
 interface ShowUIOptions {
-  visible?: boolean,
-  width?: number,
-  height?: number,
+  visible?: boolean
+  width?: number
+  height?: number
 }
 
 interface UIPostMessageOptions {
-  origin?: string,
+  origin?: string
 }
 
 interface OnMessageProperties {
-  origin: string,
+  origin: string
 }
 
 type MessageEventHandler = (pluginMessage: any, props: OnMessageProperties) => void
@@ -123,9 +123,10 @@ interface UIAPI {
 }
 
 interface ViewportAPI {
-  center: { x: number, y: number }
+  center: Vector
   zoom: number
   scrollAndZoomIntoView(nodes: ReadonlyArray<BaseNode>): void
+  readonly bounds: Rect
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -139,6 +140,13 @@ type Transform = [
 interface Vector {
   readonly x: number
   readonly y: number
+}
+
+interface Rect {
+  readonly x: number
+  readonly y: number
+  readonly width: number
+  readonly height: number
 }
 
 interface RGB {
@@ -377,15 +385,15 @@ type Reaction = { action: Action, trigger: Trigger }
 type Action =
   { readonly type: "BACK" | "CLOSE" } |
   { readonly type: "URL", url: string } |
-  { readonly type: "NODE",
-    readonly destinationId: string | null,
-    readonly navigation: Navigation,
-    readonly transition: Transition | null,
-    readonly preserveScrollPosition: boolean,
+  { readonly type: "NODE"
+    readonly destinationId: string | null
+    readonly navigation: Navigation
+    readonly transition: Transition | null
+    readonly preserveScrollPosition: boolean
 
     // Only present if navigation == "OVERLAY" and the destination uses
     // overlay position type "RELATIVE"
-    readonly overlayRelativePosition?: Vector,
+    readonly overlayRelativePosition?: Vector
   }
 
 interface SimpleTransition {
@@ -403,13 +411,13 @@ interface DirectionalTransition {
   readonly duration: number
 }
 
-export type Transition = SimpleTransition | DirectionalTransition
+type Transition = SimpleTransition | DirectionalTransition
 
 type Trigger =
   { readonly type: "ON_CLICK" | "ON_HOVER" | "ON_PRESS" | "ON_DRAG" } |
   { readonly type: "AFTER_TIMEOUT", readonly timeout: number } |
-  { readonly type: "MOUSE_ENTER" | "MOUSE_LEAVE" | "MOUSE_UP" | "MOUSE_DOWN",
-    readonly delay: number,
+  { readonly type: "MOUSE_ENTER" | "MOUSE_LEAVE" | "MOUSE_UP" | "MOUSE_DOWN"
+    readonly delay: number
   }
 
 type Navigation = "NAVIGATE" | "SWAP" | "OVERLAY"
@@ -434,7 +442,7 @@ type OverlayBackgroundInteraction = "NONE" | "CLOSE_ON_CLICK_OUTSIDE"
 interface BaseNodeMixin {
   readonly id: string
   readonly parent: (BaseNode & ChildrenMixin) | null
-  name: string // Note: setting this also sets \`autoRename\` to false on TextNodes
+  name: string // Note: setting this also sets `autoRename` to false on TextNodes
   readonly removed: boolean
   toString(): string
   remove(): void
@@ -459,7 +467,19 @@ interface ChildrenMixin {
   appendChild(child: SceneNode): void
   insertChild(index: number, child: SceneNode): void
 
+  findChildren(callback?: (node: SceneNode) => boolean): SceneNode[]
+  findChild(callback: (node: SceneNode) => boolean): SceneNode | null
+
+  /**
+   * If you only need to search immediate children, it is much faster
+   * to call node.children.filter(callback) or node.findChildren(callback)
+   */
   findAll(callback?: (node: SceneNode) => boolean): SceneNode[]
+
+  /**
+   * If you only need to search immediate children, it is much faster
+   * to call node.children.find(callback) or node.findChild(callback)
+   */
   findOne(callback: (node: SceneNode) => boolean): SceneNode | null
 }
 
@@ -476,8 +496,9 @@ interface LayoutMixin {
 
   readonly width: number
   readonly height: number
+  constrainProportions: boolean
 
-  layoutAlign: "MIN" | "CENTER" | "MAX" // applicable only inside auto-layout frames
+  layoutAlign: "MIN" | "CENTER" | "MAX" | "STRETCH" // applicable only inside auto-layout frames
 
   resize(width: number, height: number): void
   resizeWithoutConstraints(width: number, height: number): void
@@ -492,11 +513,8 @@ interface BlendMixin {
 }
 
 interface ContainerMixin {
+  expanded: boolean
   backgrounds: ReadonlyArray<Paint> // DEPRECATED: use 'fills' instead
-  layoutGrids: ReadonlyArray<LayoutGrid>
-  clipsContent: boolean
-  guides: ReadonlyArray<Guide>
-  gridStyleId: string
   backgroundStyleId: string // DEPRECATED: use 'fillStyleId' instead
 }
 
@@ -508,12 +526,14 @@ interface GeometryMixin {
   fills: ReadonlyArray<Paint> | PluginAPI['mixed']
   strokes: ReadonlyArray<Paint>
   strokeWeight: number
+  strokeMiterLimit: number
   strokeAlign: "CENTER" | "INSIDE" | "OUTSIDE"
   strokeCap: StrokeCap | PluginAPI['mixed']
   strokeJoin: StrokeJoin | PluginAPI['mixed']
   dashPattern: ReadonlyArray<number>
   fillStyleId: string | PluginAPI['mixed']
   strokeStyleId: string
+  outlineStroke(): VectorNode | null
 }
 
 interface CornerMixin {
@@ -533,26 +553,37 @@ interface ExportMixin {
   exportAsync(settings?: ExportSettings): Promise<Uint8Array> // Defaults to PNG format
 }
 
+interface RelaunchableMixin {
+  setRelaunchData(relaunchData: { [command: string]: /* description */ string }): void
+}
+
 interface ReactionMixin {
   readonly reactions: ReadonlyArray<Reaction>
 }
 
 interface DefaultShapeMixin extends
   BaseNodeMixin, SceneNodeMixin, ReactionMixin,
-  BlendMixin, GeometryMixin, LayoutMixin, ExportMixin {
+  BlendMixin, GeometryMixin, LayoutMixin,
+  ExportMixin, RelaunchableMixin {
 }
 
 interface DefaultFrameMixin extends
   BaseNodeMixin, SceneNodeMixin, ReactionMixin,
   ChildrenMixin, ContainerMixin,
   GeometryMixin, CornerMixin, RectangleCornerMixin,
-  BlendMixin, ConstraintMixin, LayoutMixin, ExportMixin {
+  BlendMixin, ConstraintMixin, LayoutMixin,
+  ExportMixin, RelaunchableMixin {
 
   layoutMode: "NONE" | "HORIZONTAL" | "VERTICAL"
   counterAxisSizingMode: "FIXED" | "AUTO" // applicable only if layoutMode != "NONE"
   horizontalPadding: number // applicable only if layoutMode != "NONE"
   verticalPadding: number // applicable only if layoutMode != "NONE"
   itemSpacing: number // applicable only if layoutMode != "NONE"
+
+  layoutGrids: ReadonlyArray<LayoutGrid>
+  gridStyleId: string
+  clipsContent: boolean
+  guides: ReadonlyArray<Guide>
 
   overflowDirection: OverflowDirection
   numberOfFixedChildren: number
@@ -572,17 +603,30 @@ interface DocumentNode extends BaseNodeMixin {
 
   appendChild(child: PageNode): void
   insertChild(index: number, child: PageNode): void
+  findChildren(callback?: (node: PageNode) => boolean): Array<PageNode>
+  findChild(callback: (node: PageNode) => boolean): PageNode | null
 
-  findAll(callback?: (node: (PageNode | SceneNode)) => boolean): Array<PageNode | SceneNode>
-  findOne(callback: (node: (PageNode | SceneNode)) => boolean): PageNode | SceneNode | null
+  /**
+   * If you only need to search immediate children, it is much faster
+   * to call node.children.filter(callback) or node.findChildren(callback)
+   */
+  findAll(callback?: (node: PageNode | SceneNode) => boolean): Array<PageNode | SceneNode>
+
+  /**
+   * If you only need to search immediate children, it is much faster
+   * to call node.children.find(callback) or node.findChild(callback)
+   */
+  findOne(callback: (node: PageNode | SceneNode) => boolean): PageNode | SceneNode | null
 }
 
-interface PageNode extends BaseNodeMixin, ChildrenMixin, ExportMixin {
+interface PageNode extends BaseNodeMixin, ChildrenMixin, ExportMixin, RelaunchableMixin {
+
   readonly type: "PAGE"
   clone(): PageNode
 
   guides: ReadonlyArray<Guide>
   selection: ReadonlyArray<SceneNode>
+  selectedTextRange: { node: TextNode, start: number, end: number } | null
 
   backgrounds: ReadonlyArray<Paint>
 
@@ -594,12 +638,19 @@ interface FrameNode extends DefaultFrameMixin {
   clone(): FrameNode
 }
 
-interface GroupNode extends BaseNodeMixin, SceneNodeMixin, ReactionMixin, ChildrenMixin, ContainerMixin, BlendMixin, LayoutMixin, ExportMixin {
+interface GroupNode extends
+  BaseNodeMixin, SceneNodeMixin, ReactionMixin,
+  ChildrenMixin, ContainerMixin, BlendMixin,
+  LayoutMixin, ExportMixin, RelaunchableMixin {
+
   readonly type: "GROUP"
   clone(): GroupNode
 }
 
-interface SliceNode extends BaseNodeMixin, SceneNodeMixin, LayoutMixin, ExportMixin {
+interface SliceNode extends
+  BaseNodeMixin, SceneNodeMixin, LayoutMixin,
+  ExportMixin, RelaunchableMixin {
+
   readonly type: "SLICE"
   clone(): SliceNode
 }
@@ -644,7 +695,6 @@ interface VectorNode extends DefaultShapeMixin, ConstraintMixin, CornerMixin {
 interface TextNode extends DefaultShapeMixin, ConstraintMixin {
   readonly type: "TEXT"
   clone(): TextNode
-  characters: string
   readonly hasMissingFont: boolean
   textAlignHorizontal: "LEFT" | "CENTER" | "RIGHT" | "JUSTIFIED"
   textAlignVertical: "TOP" | "CENTER" | "BOTTOM"
@@ -660,6 +710,10 @@ interface TextNode extends DefaultShapeMixin, ConstraintMixin {
   textDecoration: TextDecoration | PluginAPI['mixed']
   letterSpacing: LetterSpacing | PluginAPI['mixed']
   lineHeight: LineHeight | PluginAPI['mixed']
+
+  characters: string
+  insertCharacters(start: number, characters: string, useStyle?: "BEFORE" | "AFTER"): void
+  deleteCharacters(start: number, end: number): void
 
   getRangeFontSize(start: number, end: number): number | PluginAPI['mixed']
   setRangeFontSize(start: number, end: number, value: number): void
@@ -695,12 +749,15 @@ interface InstanceNode extends DefaultFrameMixin  {
   readonly type: "INSTANCE"
   clone(): InstanceNode
   masterComponent: ComponentNode
+  scaleFactor: number
 }
 
 interface BooleanOperationNode extends DefaultShapeMixin, ChildrenMixin, CornerMixin {
   readonly type: "BOOLEAN_OPERATION"
   clone(): BooleanOperationNode
   booleanOperation: "UNION" | "INTERSECT" | "SUBTRACT" | "EXCLUDE"
+
+  expanded: boolean
 }
 
 type BaseNode =
