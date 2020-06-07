@@ -18,5 +18,4 @@ This template contains the react example as shown on [Figma Docs](https://www.fi
 This repo is using:
 * React + Webpack
 * TypeScript
-* TSLint
 * Prettier precommit hook

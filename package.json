@@ -4,17 +4,18 @@
 	"description": "This plugin template uses Typescript. If you are familiar with Javascript, Typescript will look very familiar. In fact, valid Javascript code is already valid Typescript code.",
 	"license": "ISC",
 	"scripts": {
-		"build": "/usr/local/bin/node node_modules/.bin/webpack --mode=production",
-		"build:watch": "/usr/local/bin/node node_modules/.bin/webpack --mode=development --watch",
+		"build": "webpack --mode=production",
+		"build:watch": "webpack --mode=development --watch",
 		"prettier:format": "prettier --write 'src/**/*.{js,jsx,ts,tsx,css,json}' "
 	},
 	"dependencies": {
-		"react": "^16.8.6",
-		"react-dom": "^16.8.6"
+		"react": "^16.13.1",
+		"react-dom": "^16.13.1"
 	},
 	"devDependencies": {
-		"@types/react": "^16.8.24",
-		"@types/react-dom": "^16.8.5",
+		"@figma/plugin-typings": "^1.15.0",
+		"@types/react": "^16.9.35",
+		"@types/react-dom": "^16.9.8",
 		"css-loader": "^3.1.0",
 		"html-webpack-inline-source-plugin": "^0.0.10",
 		"html-webpack-plugin": "^3.2.0",
@@ -23,9 +24,7 @@
 		"prettier": "^1.18.2",
 		"style-loader": "^0.23.1",
 		"ts-loader": "^6.0.4",
-		"tslint": "^5.18.0",
-		"tslint-react": "^4.0.0",
-		"typescript": "^3.7.4",
+		"typescript": "^3.9.5",
 		"url-loader": "^2.1.0",
 		"webpack": "^4.41.4",
 		"webpack-cli": "^3.3.6"
