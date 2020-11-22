@@ -9,23 +9,23 @@
 		"prettier:format": "prettier --write 'src/**/*.{js,jsx,ts,tsx,css,json}' "
 	},
 	"dependencies": {
-		"react": "^16.13.1",
-		"react-dom": "^16.13.1"
+		"react": "^17.0.1",
+		"react-dom": "^17.0.1"
 	},
 	"devDependencies": {
 		"@figma/plugin-typings": "^1.19.0",
-		"@types/react": "^16.9.35",
-		"@types/react-dom": "^16.9.8",
-		"css-loader": "^3.1.0",
+		"@types/react": "^17.0.0",
+		"@types/react-dom": "^17.0.0",
+		"css-loader": "^5.0.1",
 		"html-webpack-inline-source-plugin": "^0.0.10",
 		"html-webpack-plugin": "^3.2.0",
-		"husky": "^3.0.2",
-		"lint-staged": "^9.2.1",
-		"prettier": "^1.18.2",
-		"style-loader": "^0.23.1",
-		"ts-loader": "^6.0.4",
-		"typescript": "^3.9.5",
-		"url-loader": "^2.1.0",
+		"husky": "^4.3.0",
+		"lint-staged": "^10.5.1",
+		"prettier": "^2.2.0",
+		"style-loader": "^2.0.0",
+		"ts-loader": "^8.0.11",
+		"typescript": "^4.1.2",
+		"url-loader": "^4.1.1",
 		"webpack": "^4.41.4",
 		"webpack-cli": "^3.3.6"
 	},
