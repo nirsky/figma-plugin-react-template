@@ -23,11 +23,11 @@ const App = ({}) => {
     React.useEffect(() => {
         // This is how we read messages sent from the plugin controller
         window.onmessage = (event) => {
-            const { type, message } = event.data.pluginMessage;
+            const {type, message} = event.data.pluginMessage;
             if (type === 'create-rectangles') {
                 console.log(`Figma Says: ${message}`);
-            };
-        }
+            }
+        };
     }, []);
 
     return (
