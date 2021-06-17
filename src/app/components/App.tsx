@@ -11,14 +11,14 @@ const App = ({}) => {
         textbox.current = element;
     }, []);
 
-    const onCreate = React.useCallback(() => {
+    const onCreate = () => {
         const count = parseInt(textbox.current.value, 10);
         parent.postMessage({pluginMessage: {type: 'create-rectangles', count}}, '*');
-    }, []);
+    };
 
-    const onCancel = React.useCallback(() => {
+    const onCancel = () => {
         parent.postMessage({pluginMessage: {type: 'cancel'}}, '*');
-    }, []);
+    };
 
     React.useEffect(() => {
         // This is how we read messages sent from the plugin controller
