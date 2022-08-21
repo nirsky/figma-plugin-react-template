@@ -1,9 +1,7 @@
-import * as React from 'react';
+import React from 'react';
 import '../styles/ui.css';
 
-declare function require(path: string): any;
-
-const App = ({}) => {
+function App() {
     const textbox = React.useRef<HTMLInputElement>(undefined);
 
     const countRef = React.useCallback((element: HTMLInputElement) => {
@@ -43,6 +41,6 @@ const App = ({}) => {
             <button onClick={onCancel}>Cancel</button>
         </div>
     );
-};
+}
 
 export default App;
