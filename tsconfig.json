@@ -6,6 +6,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
     "removeComments": true,
     "noImplicitAny": false,
     "moduleResolution": "node",

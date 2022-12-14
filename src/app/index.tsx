@@ -1,5 +1,9 @@
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import React from 'react';
+import {createRoot} from 'react-dom/client';
 import App from './components/App';
 
-ReactDOM.render(<App />, document.getElementById('react-page'));
+document.addEventListener('DOMContentLoaded', function () {
+    const container = document.getElementById('react-page');
+    const root = createRoot(container);
+    root.render(<App />);
+});

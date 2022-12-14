@@ -1,5 +1,5 @@
-const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const InlineChunkHtmlPlugin = require('react-dev-utils/InlineChunkHtmlPlugin')
 const path = require('path')
 
 module.exports = (env, argv) => ({
@@ -39,9 +39,9 @@ module.exports = (env, argv) => ({
     new HtmlWebpackPlugin({
       template: './src/app/index.html',
       filename: 'ui.html',
-      inlineSource: '.(js)$',
       chunks: ['ui'],
+      cache: false,
     }),
-    new HtmlWebpackInlineSourcePlugin(),
+    new InlineChunkHtmlPlugin(HtmlWebpackPlugin, [/ui/]),
   ],
 })
