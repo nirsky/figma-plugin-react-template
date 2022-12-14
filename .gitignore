@@ -2,3 +2,4 @@ node_modules
 dist
 settings.json
 yarn-error.log
+.vscode
